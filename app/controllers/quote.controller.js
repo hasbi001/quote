@@ -57,9 +57,20 @@ exports.findAll = (req, res) => {
 
     var quote = req.body.quote ? { quote: { [Op.like]: `%${req.body.quote}%` } } : null;
     var favorite = req.body.favorite ? { favorite: { [Op.like]: `%${req.body.favorite}%` } } : null;
+    var result = [];
+    var dataquote = [];
+    var datafav = [];
+    var counter = 0;
     Quote.findAll({where: quote,favorite})
       .then(data => {
-        res.send(data);
+        // res.send(data);
+        data.forEach(function(value,index) {
+          dataquote.push(value.quote) ;
+          datafav.push(value.favorite);
+        });
+        result.push(dataquote);
+        result.push(datafav); 
+        res.send(result);
       })
       .catch(err => {
         res.status(500).send({
@@ -152,7 +163,6 @@ exports.deleteAll = (req, res) => {
 };
 
 exports.findAllByApi = async (req, res) => {
-    // res.setHeader('Content-Type', 'application/json');
     let getData = await axios.get('https://api.kanye.rest/');
 
     let x = getData.data.quote;
